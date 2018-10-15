@@ -1,0 +1,40 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "es5",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": false,
+    "typeRoots": [
+    "./custom_typings",
+      "./node_modules/@types"
+    ],
+    "declaration": true,
+    "jsx": "react",
+    "rootDirs": [
+      "src",
+      "__tests__"
+    ],
+    "lib": [
+      "es2015"
+    ],
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "outDir": "ts_compiled"
+  },
+  "exclude": [
+    "node_modules",
+    "BackEnd/node_modules",
+    "cypress",
+    "FrontEnd",
+    "ts_compiled",
+    "tools",
+    "vendors",
+    "dist",
+    "lib"
+  ]
+}
