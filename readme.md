@@ -6,7 +6,7 @@ Usage:
 
 ```typescript
 
-const matchEntries: MatchEntry[] = [
+const clearRules: ClearRule[] = [
   KEEP(m.folder('toKeep')),
   DEL(m.folder('toDelWithKeep'), [
     KEEP(m.folder('toKeep')),
@@ -17,7 +17,7 @@ const matchEntries: MatchEntry[] = [
 ]
 await clearFs({
   fullPath: fixturePath,
-  matchEntries,
+  clearRules,
   action: ACTIONS.DELETE,
 })
 ```
