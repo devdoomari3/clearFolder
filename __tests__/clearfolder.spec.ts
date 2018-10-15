@@ -7,7 +7,7 @@ import {
   DEL,
   KEEP,
   m,
-  ClearRule,
+  MatchEntry,
 } from '../src'
 
 describe('[utils] clearFolder should...', () => {
@@ -47,7 +47,7 @@ describe('[utils] clearFolder should...', () => {
         'toDel',
       ),
     ]
-    const clearRules: ClearRule[] = [
+    const matchEntries: MatchEntry[] = [
       KEEP(m.folder('toKeep')),
       DEL(m.folder('toDelWithKeep'), [
         KEEP(m.folder('toKeep')),
@@ -58,7 +58,7 @@ describe('[utils] clearFolder should...', () => {
     ]
     await clearFs({
       fullPath: fixturePath,
-      clearRules,
+      matchEntries,
       action: ACTIONS.DELETE,
     })
     const mustBeRemovedResults = await Promise.all(
