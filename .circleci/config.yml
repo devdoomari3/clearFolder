@@ -1,0 +1,65 @@
+user.email: devdoomari@gmail.com
+user.name: devdoomari-circlei
+jobs:
+  push_dist:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - run:
+          name: Set git username/email
+          command: 'mkdir -p ~/.git && git config --global user.email "devdoomari@gmail.com" && git config --global user.name "devdoomari.circleci"'
+      - run:
+          name: install-yarn-globally
+          command: 'sudo npm install -g yarn'
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-packages-{{ .Branch }}
+            - yarn-packages-master
+            - yarn-packages-
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/
+      - run:
+          name: build
+          command: yarn build
+      - run:
+          name: pull-merge-build-forcepush
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "develop" ]
+            then
+              git checkout master
+            else
+              git checkout -b $'dist-'"$CIRCLE_BRANCH"
+            fi
+            git checkout master
+            mkdir -p ~/.git && git config user.email "devdoomari@gmail.com" && git config user.name "devdoomari.circleci"
+            git merge -X theirs --no-edit $CIRCLE_BRANCH
+            npm run clean && npm run build
+            git add -f lib
+            git commit --allow-empty -m $'generated from:'"$CIRCLE_SHA1"$'\ntriggered by:'"$CIRCLE_USERNAME"$' [ci skip]'
+            git tag -a $'dist_'"$CIRCLE_BRANCH"'_'"$CIRCLE_BUILD_NUM" -m "."
+            if [ "${CIRCLE_BRANCH}" == "develop" ]
+            then
+              git push --set-upstream origin master --force --follow-tags
+            else
+              git push --set-upstream origin $'dist-'"$CIRCLE_BRANCH" --force --follow-tags
+            fi
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - push_dist:
+          filters:
+            branches:
+              ignore:
+               - /^dist*/
+               - master
