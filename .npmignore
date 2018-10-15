@@ -1,0 +1,4 @@
+node_modules
+ts_compiled
+*.log
+__tests__/fixtures/clearFolder
