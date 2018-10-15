@@ -7,7 +7,7 @@ import {
   DEL,
   KEEP,
   m,
-  MatchEntry,
+  ClearRule,
 } from '../src'
 
 describe('[utils] clearFolder should...', () => {
@@ -47,7 +47,7 @@ describe('[utils] clearFolder should...', () => {
         'toDel',
       ),
     ]
-    const matchEntries: MatchEntry[] = [
+    const matchEntries: ClearRule[] = [
       KEEP(m.folder('toKeep')),
       DEL(m.folder('toDelWithKeep'), [
         KEEP(m.folder('toKeep')),

@@ -15,10 +15,10 @@ export {
 }
 
 /* eslint-disable no-use-before-define */
-export type MatchEntry = {
+export type ClearRule = {
   action: ACTIONS;
   matcher: MatchFuncType;
-  children?: MatchEntry[];
+  children?: ClearRule[];
 }
 
 export enum ACTIONS {
@@ -28,8 +28,8 @@ export enum ACTIONS {
 
 export function KEEP (
   matcher: MatchFuncType,
-  children?: MatchEntry[],
-): MatchEntry {
+  children?: ClearRule[],
+): ClearRule {
   return {
     action: ACTIONS.KEEP,
     matcher,
@@ -39,8 +39,8 @@ export function KEEP (
 
 export function DEL (
   matcher: MatchFuncType,
-  children?: MatchEntry[],
-): MatchEntry {
+  children?: ClearRule[],
+): ClearRule {
   return {
     action: ACTIONS.DELETE,
     matcher,
@@ -56,13 +56,13 @@ export enum CLEAR_RESULT {
 export async function clearFs (args: {
   fullPath: string;
   stat?: fs.Stats;
-  matchEntries: MatchEntry[];
+  clearRules: ClearRule[];
   action: ACTIONS;
 }): Promise<CLEAR_RESULT> {
   const {
     fullPath,
     stat: _stat,
-    matchEntries,
+    clearRules,
     action,
   } = args
   const stat = _stat || await fs.stat(fullPath)
@@ -75,28 +75,28 @@ export async function clearFs (args: {
         const childFullPath = path.join(fullPath, childPath)
         const childStat = await fs.stat(childFullPath)
         const parsedPath = path.parse(childFullPath)
-        const matchResults = matchEntries.map(matchEntry => ({
-          ...matchEntry,
-          result: matchEntry.matcher({
+        const ruleMatchResults = clearRules.map(clearRule => ({
+          ...clearRule,
+          result: clearRule.matcher({
             fullPath: childFullPath,
             stat: childStat,
             parsedPath,
           }),
         }))
 
-        const matchingEntries = matchResults
+        const matchingRules = ruleMatchResults
           .filter(
             mr =>
               mr.result === MatcherResult.isMatch,
           )
-        const nestedEntries = matchResults
+        const nestedRules = ruleMatchResults
           .filter(
             mr => mr.result === MatcherResult.toChildren,
           )
-          .map(mr => omit(mr, 'result') as MatchEntry)
-        const effective = last(matchingEntries)
-        const childMatchEntries = flatten(
-          matchingEntries
+          .map(mr => omit(mr, 'result') as ClearRule)
+        const effective = last(matchingRules)
+        const childClearRules = flatten(
+          matchingRules
             .filter(me => me.children)
             .map(me => me.children!),
         )
@@ -107,7 +107,7 @@ export async function clearFs (args: {
           fullPath: childFullPath,
           stat: childStat,
           action: childAction,
-          matchEntries: nestedEntries.concat(childMatchEntries),
+          clearRules: nestedRules.concat(childClearRules),
         })
 
         return {
