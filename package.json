@@ -6,7 +6,10 @@
   "license": "PRIVATE",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build-lib": "tsc --project tsconfig.lib.json",
+    "build": "npm run test && npm run build-lib",
+    "clean": "rimraf lib ts_compiled"
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.4",
