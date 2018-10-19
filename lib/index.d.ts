@@ -22,4 +22,4 @@ export declare function clearFs(args: {
     stat?: fs.Stats;
     clearRules: ClearRule[];
     action: ACTIONS;
-}): Promise<CLEAR_RESULT>;
+}): Promise<any>;
