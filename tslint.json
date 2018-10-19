@@ -55,6 +55,7 @@
     "no-void-expression": false,
     "no-suspicious-comment": false,
     "no-object-literal-type-assertion": false,
+    "no-floating-promises": true,
     "ter-indent": [
       true,
       2,
