@@ -1,3 +1,5 @@
+Error.stackTraceLimit = 10000
+
 module.exports = {
   "roots": [
     "<rootDir>/src",
