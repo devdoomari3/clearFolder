@@ -3,9 +3,9 @@
 
 Clear-folder: clears files/folders with rules
 
-Usage:
+## usage
 
-- see __tests__/clearfolder.spec.ts file
+- see `__tests__/clearfolder.spec.ts` file
 
 ```typescript
 
@@ -24,3 +24,8 @@ await clearFs({
   action: ACTIONS.DELETE,
 })
 ```
+
+## License
+Do whatever you like (copy/fork/resell as-is😒/...) , except:
+ - sue me for bugs
+ - forget to link to this repo as the original / attribute
